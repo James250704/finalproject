@@ -10,6 +10,9 @@ const goldPricesRouter = require("./routes/goldPrices");
 const loginRouter = require("./routes/login");
 const registerRouter = require("./routes/register");
 const logoutRouter = require("./routes/logout");
+const UserRouter = require("./routes/user");
+
+const { useRouter } = require("vue-router");
 const app = express();
 const PORT = 3000; // 您可依需求將 3000 改成其他埠號
 
@@ -29,6 +32,7 @@ app.use("/api/goldPrices", goldPricesRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/register", registerRouter);
 app.use("/api/logout", logoutRouter);
+app.use("/api/users", UserRouter);
 
 // ===========================
 // 3. 啟動伺服器
