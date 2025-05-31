@@ -72,10 +72,10 @@ export default {
                 this.messageModalInstance.show();
             }
         };
-        window.addEventListener("show-message", this.messageHandler);
+        window.addEventListener("show-message", this.messageHandler); // Corrected event name
     },
     beforeUnmount() {
-        window.removeEventListener("show-message", this.messageHandler);
+        window.removeEventListener("show-message", this.messageHandler); // Corrected event name
         if (this.messageModalInstance) {
             this.messageModalInstance.dispose();
         }

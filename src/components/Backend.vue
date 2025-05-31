@@ -46,7 +46,9 @@
                             <form @submit.prevent="handleSave">
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
-                                        <label for="dateInput" class="form-label"
+                                        <label
+                                            for="dateInput"
+                                            class="form-label"
                                             >日期 (YYYY-MM-DD):</label
                                         >
                                         <input
@@ -59,7 +61,9 @@
                                         />
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="priceInput" class="form-label"
+                                        <label
+                                            for="priceInput"
+                                            class="form-label"
                                             >價格:</label
                                         >
                                         <input
@@ -67,6 +71,7 @@
                                             class="form-control"
                                             id="priceInput"
                                             v-model.number="price"
+                                            step="0.01"
                                             required
                                         />
                                     </div>
@@ -179,7 +184,8 @@
                                     ></button>
                                 </div>
                                 <div class="modal-body">
-                                    確定要刪除日期 {{ dateToDelete }} 的價格資料嗎？
+                                    確定要刪除日期
+                                    {{ dateToDelete }} 的價格資料嗎？
                                 </div>
                                 <div class="modal-footer">
                                     <button
@@ -219,19 +225,22 @@
                                     <th>操作</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                           <tbody>
                                 <tr v-for="user in usersList" :key="user.id">
                                     <td>{{ user.userName }}</td>
-                                    <td>{{ user.role }}</td>
+                                    <td>
+                                        <select v-model="user.role" class="form-select form-select-sm">
+                                            <option value="user">user</option>
+                                            <option value="admin">admin</option>
+                                        </select>
+                                    </td>
                                     <td>
                                         <button
-                                            v-if="user.role !== 'admin'"
                                             @click="updateUserRole(user)"
-                                            class="btn btn-sm btn-outline-success"
+                                            class="btn btn-sm btn-primary"
                                         >
-                                            提升為管理員
+                                            儲存
                                         </button>
-                                        <span v-else>管理員</span>
                                     </td>
                                 </tr>
                                 <tr v-if="usersList.length === 0">
@@ -271,7 +280,7 @@ export default {
 
         // 格式化金額
         const formatCurrency = (value) => {
-            if (typeof value !== 'number') {
+            if (typeof value !== "number") {
                 return value; // 或返回一個預設值，如 'N/A'
             }
             return new Intl.NumberFormat("en-US", {
@@ -305,16 +314,19 @@ export default {
         const loadUsers = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:3000/api/users", {
+                    "http://localhost:3000/api/users",
+                    {
                         headers: {
-                            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
-                        }
+                            Authorization: `Bearer ${
+                                JSON.parse(localStorage.getItem("user"))?.token
+                            }`,
+                        },
                     }
                 );
                 if (!response.ok) {
                     if (response.status === 403) {
-                         showAppMessage("您沒有權限查看使用者列表。");
-                         return;
+                        showAppMessage("您沒有權限查看使用者列表。");
+                        return;
                     }
                     throw new Error("無法獲取使用者資料");
                 }
@@ -335,9 +347,11 @@ export default {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
+                            Authorization: `Bearer ${
+                                JSON.parse(localStorage.getItem("user"))?.token
+                            }`,
                         },
-                        body: JSON.stringify({ role: "admin" }),
+                        body: JSON.stringify({ role: user.role }),
                     }
                 );
                 if (!response.ok) throw new Error("更新角色失敗");
@@ -375,7 +389,9 @@ export default {
                     method: method,
                     headers: {
                         "Content-Type": "application/json",
-                        'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
+                        Authorization: `Bearer ${
+                            JSON.parse(localStorage.getItem("user"))?.token
+                        }`,
                     },
                     body: JSON.stringify(payload),
                 });
@@ -384,7 +400,10 @@ export default {
                     throw new Error(errorData.message || "操作失敗");
                 }
                 const result = await response.json();
-                showAppMessage(result.message || (isEditing.value ? "更新成功" : "新增成功"));
+                showAppMessage(
+                    result.message ||
+                        (isEditing.value ? "更新成功" : "新增成功")
+                );
                 resetForm();
                 loadPrices(); // 重新載入價格列表
             } catch (error) {
@@ -420,7 +439,9 @@ export default {
             if (bsDeleteModalInstance.value) {
                 bsDeleteModalInstance.value.show();
             } else {
-                console.error("Bootstrap delete modal instance is not available.");
+                console.error(
+                    "Bootstrap delete modal instance is not available."
+                );
                 showAppMessage("無法開啟刪除確認視窗，請稍後再試。");
             }
         };
@@ -433,8 +454,10 @@ export default {
                     {
                         method: "DELETE",
                         headers: {
-                             'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user'))?.token}`
-                        }
+                            Authorization: `Bearer ${
+                                JSON.parse(localStorage.getItem("user"))?.token
+                            }`,
+                        },
                     }
                 );
                 if (!response.ok) {
@@ -470,7 +493,9 @@ export default {
             const term = searchTerm.value.toLowerCase().trim();
             return allPricesData.value.filter((item) => {
                 const dateMatch = item.date.toLowerCase().includes(term);
-                const priceMatch = item.price !== null && item.price.toString().toLowerCase().includes(term);
+                const priceMatch =
+                    item.price !== null &&
+                    item.price.toString().toLowerCase().includes(term);
                 return dateMatch || priceMatch;
             });
         });
@@ -482,13 +507,20 @@ export default {
             // deleteModal.value will be the DOM element due to ref="deleteModal" in template
             if (deleteModal.value) {
                 try {
-                    bsDeleteModalInstance.value = new bootstrap.Modal(deleteModal.value);
+                    bsDeleteModalInstance.value = new bootstrap.Modal(
+                        deleteModal.value
+                    );
                 } catch (error) {
-                    console.error("Failed to initialize Bootstrap delete modal:", error);
+                    console.error(
+                        "Failed to initialize Bootstrap delete modal:",
+                        error
+                    );
                     showAppMessage("刪除確認視窗初始化失敗。");
                 }
             } else {
-                console.error("Delete modal DOM element (ref='deleteModal') not found in onMounted.");
+                console.error(
+                    "Delete modal DOM element (ref='deleteModal') not found in onMounted."
+                );
                 showAppMessage("找不到刪除確認視窗的 DOM 元素。");
             }
         });
