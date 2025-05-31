@@ -1,13 +1,17 @@
 <template>
-    <h1>{{ message }}</h1>
+  <div id="app">
+    <Headernav />
+    <router-view class="container"></router-view>
+  </div>
 </template>
 
 <script>
+import Headernav from "@/components/Headernav.vue";
+
 export default {
-    data() {
-        return {
-            message: 'Hello Vue!',
-        }
-    }
+  name: "App",
+  components: {
+    Headernav,
+  },
 };
 </script>
