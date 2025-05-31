@@ -3,50 +3,25 @@
         <main class="form-signin w-100 m-auto" style="max-width: 330px">
             <form @submit.prevent="handleLogin">
                 <div class="text-center">
-                    <img
-                        class="mb-4"
-                        src="@/assets/title.png"
-                        alt="Logo"
-                        height="57"
-                    />
+                    <img class="mb-4" src="@/assets/title.png" alt="Logo" height="57" />
                 </div>
                 <h1 class="h3 mb-3 fw-normal text-center">請登入</h1>
 
                 <div class="form-floating mb-2">
-                    <input
-                        v-model="userName"
-                        type="text"
-                        class="form-control"
-                        id="userName"
-                        placeholder="使用者名稱"
-                        required
-                    />
+                    <input v-model="userName" type="text" class="form-control" id="userName" placeholder="使用者名稱" required />
                     <label for="userName">使用者名稱</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input
-                        v-model="password"
-                        type="password"
-                        class="form-control"
-                        id="password"
-                        placeholder="密碼"
-                        required
-                    />
+                    <input v-model="password" type="password" class="form-control" id="password" placeholder="密碼" required />
                     <label for="password">密碼</label>
                 </div>
 
-                <button class="btn btn-primary w-100 py-2" type="submit">
-                    登入
-                </button>
+                <button class="btn btn-primary w-100 py-2" type="submit">登入</button>
                 <p class="mt-3 mb-1 text-center">
                     還沒有帳號嗎？
                     <router-link to="/register">註冊</router-link>
                 </p>
-                <p
-                    v-if="message"
-                    :class="['mt-3', 'text-center', messageType]"
-                    style="min-height: 1.5em"
-                >
+                <p v-if="message" :class="['mt-3', 'text-center', messageType]" style="min-height: 1.5em">
                     {{ message }}
                 </p>
             </form>
@@ -71,19 +46,16 @@ export default {
             message.value = "";
             messageType.value = "";
             try {
-                const response = await fetch(
-                    "http://localhost:3000/api/login",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            userName: userName.value,
-                            password: password.value,
-                        }),
-                    }
-                );
+                const response = await fetch("http://localhost:3000/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        userName: userName.value,
+                        password: password.value,
+                    }),
+                });
                 const data = await response.json();
                 if (response.ok) {
                     message.value = data.message + "，將跳轉至後台...";

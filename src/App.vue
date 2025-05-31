@@ -4,36 +4,16 @@
         <router-view class="container"></router-view>
 
         <!-- 通用訊息提示 Modal -->
-        <div
-            class="modal fade"
-            id="messageModal"
-            tabindex="-1"
-            aria-labelledby="messageModalLabel"
-            aria-hidden="true"
-            ref="messageModalRef"
-        >
+        <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" ref="messageModalRef">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="messageModalLabel">
-                            通知
-                        </h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
+                        <h5 class="modal-title" id="messageModalLabel">通知</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">{{ messageText }}</div>
                     <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            data-bs-dismiss="modal"
-                        >
-                            關閉
-                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">關閉</button>
                     </div>
                 </div>
             </div>
@@ -60,9 +40,7 @@ export default {
     mounted() {
         // 初始化 Bootstrap Modal
         if (this.$refs.messageModalRef) {
-            this.messageModalInstance = new bootstrap.Modal(
-                this.$refs.messageModalRef
-            );
+            this.messageModalInstance = new bootstrap.Modal(this.$refs.messageModalRef);
         }
 
         // 監聽自訂事件

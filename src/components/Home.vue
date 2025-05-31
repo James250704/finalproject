@@ -3,34 +3,17 @@
         <h1 class="mb-4">黃金價格趨勢圖</h1>
         <div class="row mb-3">
             <div class="col-md-4">
-                <label for="searchDate" class="form-label"
-                    >搜尋特定日期 (YYYY-MM-DD):</label
-                >
-                <input
-                    type="date"
-                    v-model="searchDate"
-                    class="form-control"
-                    id="searchDate"
-                    ref="searchDateInputEl"
-                    @click="handleDateInputClick"
-                />
+                <label for="searchDate" class="form-label">搜尋特定日期 (YYYY-MM-DD):</label>
+                <input type="date" v-model="searchDate" class="form-control" id="searchDate" ref="searchDateInputEl" @click="handleDateInputClick" />
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button @click="handleSearch" class="btn btn-primary w-100">
-                    搜尋
-                </button>
+                <button @click="handleSearch" class="btn btn-primary w-100">搜尋</button>
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button @click="handleReset" class="btn btn-secondary w-100">
-                    重置
-                </button>
+                <button @click="handleReset" class="btn btn-secondary w-100">重置</button>
             </div>
         </div>
-        <div
-            v-html="searchResult"
-            class="mt-2 mb-3"
-            style="min-height: 2em"
-        ></div>
+        <div v-html="searchResult" class="mt-2 mb-3" style="min-height: 2em"></div>
         <div>
             <canvas ref="chartCanvas"></canvas>
         </div>
@@ -52,9 +35,7 @@ export default {
 
         const fetchAllDataAndRenderChart = async () => {
             try {
-                const response = await fetch(
-                    "http://localhost:3000/api/goldPrices"
-                );
+                const response = await fetch("http://localhost:3000/api/goldPrices");
                 if (!response.ok) {
                     throw new Error(`HTTP 錯誤！狀態：${response.status}`);
                 }
@@ -68,90 +49,76 @@ export default {
                     chartInstance.value.destroy();
                 }
 
-                chartInstance.value = new Chart(
-                    chartCanvas.value.getContext("2d"),
-                    {
-                        type: "line",
-                        data: {
-                            labels: labels,
-                            datasets: [
-                                {
-                                    label: "黃金價格 (美元/盎司)",
-                                    data: dataPoints,
-                                    borderColor: "rgb(255, 205, 86)",
-                                    backgroundColor: "rgba(255, 205, 86, 0.2)",
-                                    tension: 0.1,
-                                    fill: true,
-                                },
-                            ],
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: false,
-                                    title: {
-                                        display: true,
-                                        text: "價格 (美元)",
-                                    },
-                                },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: "日期",
-                                    },
+                chartInstance.value = new Chart(chartCanvas.value.getContext("2d"), {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "黃金價格 (美元/盎司)",
+                                data: dataPoints,
+                                borderColor: "rgb(255, 205, 86)",
+                                backgroundColor: "rgba(255, 205, 86, 0.2)",
+                                tension: 0.1,
+                                fill: true,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: "價格 (美元)",
                                 },
                             },
-                            plugins: {
-                                tooltip: {
-                                    callbacks: {
-                                        label(context) {
-                                            let label =
-                                                context.dataset.label || "";
-                                            if (label) {
-                                                label += ": ";
-                                            }
-                                            if (context.parsed.y !== null) {
-                                                label += new Intl.NumberFormat(
-                                                    "en-US",
-                                                    {
-                                                        style: "currency",
-                                                        currency: "USD",
-                                                    }
-                                                ).format(context.parsed.y);
-                                            }
-                                            return label;
-                                        },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "日期",
+                                },
+                            },
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label(context) {
+                                        let label = context.dataset.label || "";
+                                        if (label) {
+                                            label += ": ";
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat("en-US", {
+                                                style: "currency",
+                                                currency: "USD",
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
                                     },
                                 },
                             },
                         },
-                    }
-                );
+                    },
+                });
 
                 if (prices.length === 0) {
                     const ctx = chartCanvas.value.getContext("2d");
                     ctx.font = "20px Arial";
                     ctx.textAlign = "center";
-                    ctx.fillText(
-                        "目前沒有黃金價格資料可顯示",
-                        ctx.canvas.width / 2,
-                        ctx.canvas.height / 2
-                    );
+                    ctx.fillText("目前沒有黃金價格資料可顯示", ctx.canvas.width / 2, ctx.canvas.height / 2);
                 }
             } catch (error) {
                 console.error("無法獲取或渲染黃金價格圖表:", error);
-                searchResult.value =
-                    '<p class="text-danger">無法載入圖表資料，請稍後再試。</p>';
+                searchResult.value = '<p class="text-danger">無法載入圖表資料，請稍後再試。</p>';
             }
         };
 
         const fetchAndDisplaySingleDatePrice = async (date) => {
             searchResult.value = "";
             try {
-                const response = await fetch(
-                    `http://localhost:3000/api/goldPrices/${date}`
-                );
+                const response = await fetch(`http://localhost:3000/api/goldPrices/${date}`);
                 if (!response.ok) {
                     if (response.status === 404) {
                         searchResult.value = `<p class="text-warning">找不到日期 ${date} 的黃金價格資料。</p>`;
@@ -195,12 +162,10 @@ export default {
                 if (/^\d{4}-\d{2}-\d{2}$/.test(searchDate.value)) {
                     fetchAndDisplaySingleDatePrice(searchDate.value);
                 } else {
-                    searchResult.value =
-                        '<p class="text-danger">請輸入有效的日期格式 (YYYY-MM-DD)。</p>';
+                    searchResult.value = '<p class="text-danger">請輸入有效的日期格式 (YYYY-MM-DD)。</p>';
                 }
             } else {
-                searchResult.value =
-                    '<p class="text-warning">請輸入要搜尋的日期。</p>';
+                searchResult.value = '<p class="text-warning">請輸入要搜尋的日期。</p>';
             }
         };
 
