@@ -60,7 +60,3 @@ export default {
     },
 };
 </script>
-
-<style>
-/* 如需自訂樣式，可在此添加 */
-</style>
